@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="initDLL.cpp" />
+    <ClCompile Include="BF2.cpp">
+      <Filter>BF2</Filter>
+    </ClCompile>
+    <ClCompile Include="IAT.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="BF2">
+      <UniqueIdentifier>{90daae5e-9583-497c-a0ab-e17dd8740149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bs">
+      <UniqueIdentifier>{a3c07e8b-e141-4be6-b02d-96c84bb82549}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BF2Stl.h">
+      <Filter>BF2</Filter>
+    </ClInclude>
+    <ClInclude Include="BF2.h">
+      <Filter>BF2</Filter>
+    </ClInclude>
+    <ClInclude Include="IAT.h" />
+    <ClInclude Include="HookedDirect3D9.h" />
+    <ClInclude Include="HookedDirect3DDevice9.h" />
+    <ClInclude Include="bs\easy_bind.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\ebool.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\function_traits.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\lexical_cast.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\profile.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\string.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\string_functor.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\union_cast.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\utilities.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\vectors.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\window.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="bs\vtable_hook.h">
+      <Filter>bs</Filter>
+    </ClInclude>
+    <ClInclude Include="BF2Classes.h">
+      <Filter>BF2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bs\vtable_counter.inc">
+      <Filter>bs</Filter>
+    </None>
+  </ItemGroup>
+</Project>
