@@ -109,7 +109,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RunWDebugger|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>..\RFX\Release\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\RFX\;$(LibraryPath)</LibraryPath>
     <OutDir>D:\Games\OriginGames\Battlefield 2 Complete Collection\RFX\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
