@@ -5,7 +5,7 @@
 // The game was build with a very old version (VC++7.1 2003?) of visual studio which has different version of stl
 // These structs allow us to atleast read from them safely
 using namespace std;
-namespace BF2
+namespace DICE
 {
 	namespace std
 	{

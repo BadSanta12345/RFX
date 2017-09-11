@@ -10,7 +10,7 @@ namespace bs
 /*
 * Hide the gory details here
 */
-namespace BF2
+namespace DICE
 {
 	namespace detail
 	{
@@ -421,7 +421,7 @@ namespace BF2
 
 		class CHudInformationLayer
 		{
-		private:
+		public:
 			virtual void Function0(); //0
 			virtual void Function1(); //4
 			virtual void Function2(); //8

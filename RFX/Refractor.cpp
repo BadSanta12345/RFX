@@ -1,37 +1,39 @@
-#include "BF2.h"
+#include "Refractor.h"
 #include "BF2Stl.h"
 #include <Windows.h>
 #include "bs\vtable_hook.h"
 #include "bs\vectors.h"
 
-namespace BF2
+namespace DICE
 {
-	detail::CClassManager* g_pClassManager;
-	detail::CMainConsole* g_pMainConsole;
-	detail::CMainConsoleObjects* g_pMainConsoleObjects;
-
 	bs::IWindow* pWindow = nullptr;
 
 	void init(bs::IWindow* pWindow_)
 	{
-		g_pClassManager = *reinterpret_cast<detail::CClassManager**>(0x5FF960 + unsigned int(GetModuleHandle(0)));
-		g_pMainConsole = reinterpret_cast<detail::CMainConsole*>(g_pClassManager->getClassByName(&std::string("MainConsole")));
-		g_pMainConsoleObjects = reinterpret_cast<detail::CMainConsoleObjects*>(g_pClassManager->getClassByName(&std::string("MainConsoleObjects")));
+		detail::g_pClassManager = *reinterpret_cast<detail::CClassManager**>(0x5FF960 + unsigned int(GetModuleHandle(0)));
+		detail::g_pMainConsole = reinterpret_cast<detail::CMainConsole*>(detail::g_pClassManager->getClassByName(&std::string("MainConsole")));
+		detail::g_pMainConsoleObjects = reinterpret_cast<detail::CMainConsoleObjects*>(detail::g_pClassManager->getClassByName(&std::string("MainConsoleObjects")));
+		detail::g_pHudInformationLayer = reinterpret_cast<detail::CHudInformationLayer*>(detail::g_pClassManager->getClassByName(&std::string("HudInformationLayer")));
+
+		HudItems::init();
+		ShaderManager::init();
+
 		pWindow = pWindow_;
 	}
 
 	void update()
 	{
 		// TODO: Find a better place/way to do this
+		// there seems to be a new instance of SwiffPlayer each time the main menu is opened. Maybe we could hook the method creating the instance and doing this there?
 		detail::CSwiffPlayer* pSwiffPlayer = nullptr;
 		static detail::CSwiffPlayer* preSwiffPlayer = nullptr;
-		pSwiffPlayer = reinterpret_cast<detail::CSwiffPlayer*>(g_pClassManager->getClassByName(&std::string("SwiffPlayer")));
+		pSwiffPlayer = reinterpret_cast<detail::CSwiffPlayer*>(detail::g_pClassManager->getClassByName(&std::string("SwiffPlayer")));
 		if (pSwiffPlayer && pSwiffPlayer != preSwiffPlayer)
 		{
 			HOOK_VTABLE_FUNCTION(pSwiffPlayer, &detail::CSwiffPlayer::updateMouse, [](Hook_t::DetourArgs_t detourArgs)
 			{
 				// Fixes mouse related bug in flash menu after resizing window.
-				detail::CSwiffHost* pSwiffHost = reinterpret_cast<detail::CSwiffHost*>(g_pClassManager->getClassByName(&std::string("SwiffHost")));
+				detail::CSwiffHost* pSwiffHost = reinterpret_cast<detail::CSwiffHost*>(detail::g_pClassManager->getClassByName(&std::string("SwiffHost")));
 
 				bs::TUInt2 preMouseArea;
 				if (pSwiffHost)
@@ -58,6 +60,11 @@ namespace BF2
 
 	namespace detail
 	{
+		CClassManager* g_pClassManager;
+		CMainConsole* g_pMainConsole;
+		CMainConsoleObjects* g_pMainConsoleObjects;
+		CHudInformationLayer* g_pHudInformationLayer;
+
 		std::string* pInvokeReturn = nullptr;
 
 		void* __fastcall  myInvoke(CMainConsoleObject* thisptr, int, std::string* result, std::string* _args, int numArgs)
@@ -122,8 +129,8 @@ namespace BF2
 	::std::string invoke(const ::std::string& cmd)
 	{
 		std::string retVal;
-		retVal._Grow(1024);
-		g_pMainConsole->Exec(&std::string((cmd + '\n').c_str()), &retVal);
+		retVal._Grow(1024); // TODO: figure out what is the actual required size / size used by DICE
+		detail::g_pMainConsole->Exec(&std::string((cmd + '\n').c_str()), &retVal);
 		return ::std::string(retVal.c_str());
 	}
 

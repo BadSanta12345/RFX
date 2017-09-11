@@ -1,8 +1,9 @@
 #include <Windows.h>
 #include "bs\window.h"
-#include "BF2.h"
+#include "Refractor.h"
 #include "IAT.h"
 #include "HookedDirect3D9.h"
+#include "ShaderHook.h"
 
 // Enable assertion even thought we are actually compiling a release build.
 #undef NDEBUG
@@ -31,6 +32,8 @@ bs::TUInt2 get_resolution()
 
 
 bs::IWindow * pWindow = nullptr;
+int rightOffset;
+int leftOffset;
 
 auto pOrigCreateWindowExA = CreateWindowExA;
 HWND WINAPI MyCreateWindowExA(
@@ -42,8 +45,13 @@ HWND WINAPI MyCreateWindowExA(
 		WS_VISIBLE, 0, 0, get_resolution().x(), get_resolution().y(), hWndParent, hMenu, hInstance, nullptr/*lpParam*/);
 
 	pWindow = new bs::IWindow(retVal);
-	BF2::init(pWindow);
-	BF2::createConsoleObject(bs::lambda([](std::string val)
+	DICE::init(pWindow);
+
+
+	DICE::HudItems::createInt("RightOffset", &rightOffset);
+	DICE::HudItems::createInt("LeftOffset", &leftOffset);
+
+	DICE::createConsoleObject(bs::lambda([](std::string val)
 	{
 		MessageBoxA(0, val.c_str(), "", MB_OK);
 	}), "GameMessageBox");
@@ -59,8 +67,8 @@ BOOL WINAPI MyPeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgF
 	if (!retVal) // there are no messages
 	{
 		// This is usefull for testing stuff and also serves as a sort of mainloop for .con "scripts"
-		BF2::invoke("run Common/Scripts/MainLoop.con");
-		BF2::update();
+		DICE::invoke("run Common/Scripts/MainLoop.con");
+		DICE::update();
 	}
 	else
 	{
@@ -100,6 +108,7 @@ HMODULE WINAPI MyLoadLibraryA(LPCSTR lpLibFileName)
 	if (!pOrigDirect3DCreate9 && _stricmp(".\\RendDX9.dll", lpLibFileName) == 0)
 	{
 		pOrigDirect3DCreate9 = IAT::hook_function("Direct3DCreate9", hModule, MyDirect3DCreate9);
+		pOrigD3DXCreateEffect = IAT::hook_function("D3DXCreateEffect", hModule, MyD3DXCreateEffect);
 	}
 	return hModule;
 }

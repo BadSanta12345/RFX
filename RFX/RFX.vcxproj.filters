@@ -2,10 +2,22 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="initDLL.cpp" />
-    <ClCompile Include="BF2.cpp">
+    <ClCompile Include="IAT.cpp" />
+    <ClCompile Include="Memory.cpp">
       <Filter>BF2</Filter>
     </ClCompile>
-    <ClCompile Include="IAT.cpp" />
+    <ClCompile Include="HudString.cpp">
+      <Filter>BF2</Filter>
+    </ClCompile>
+    <ClCompile Include="HudItems.cpp">
+      <Filter>BF2</Filter>
+    </ClCompile>
+    <ClCompile Include="Refractor.cpp">
+      <Filter>BF2</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>BF2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BF2">
@@ -17,9 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BF2Stl.h">
-      <Filter>BF2</Filter>
-    </ClInclude>
-    <ClInclude Include="BF2.h">
       <Filter>BF2</Filter>
     </ClInclude>
     <ClInclude Include="IAT.h" />
@@ -62,6 +71,12 @@
       <Filter>bs</Filter>
     </ClInclude>
     <ClInclude Include="BF2Classes.h">
+      <Filter>BF2</Filter>
+    </ClInclude>
+    <ClInclude Include="Refractor.h">
+      <Filter>BF2</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderHook.h">
       <Filter>BF2</Filter>
     </ClInclude>
   </ItemGroup>
