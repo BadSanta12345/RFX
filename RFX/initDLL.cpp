@@ -86,7 +86,11 @@ BOOL WINAPI MyPeekMessage(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgF
 				pWindow->setTopMost(fullscreen);
 				pWindow->setPosition({ 0,0 });
 			}
+		case WM_QUIT:
+			int quit = 1;
+			break;
 		}
+
 	}
 
 	return retVal;
@@ -127,7 +131,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 		break;
 
 	case DLL_PROCESS_DETACH:
-
+		int dd = dwReason;
 		break;
 	}
 	return true;

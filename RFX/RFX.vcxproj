@@ -182,7 +182,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>stl_8_wrapper.lib;d3dx9.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dx9.lib;d3d9.lib;stl_8_wrapper.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

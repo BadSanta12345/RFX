@@ -27,34 +27,37 @@ namespace DICE
 		// there seems to be a new instance of SwiffPlayer each time the main menu is opened. Maybe we could hook the method creating the instance and doing this there?
 		detail::CSwiffPlayer* pSwiffPlayer = nullptr;
 		static detail::CSwiffPlayer* preSwiffPlayer = nullptr;
-		pSwiffPlayer = reinterpret_cast<detail::CSwiffPlayer*>(detail::g_pClassManager->getClassByName(&std::string("SwiffPlayer")));
-		if (pSwiffPlayer && pSwiffPlayer != preSwiffPlayer)
+		if(detail::g_pClassManager)
 		{
-			HOOK_VTABLE_FUNCTION(pSwiffPlayer, &detail::CSwiffPlayer::updateMouse, [](Hook_t::DetourArgs_t detourArgs)
+			pSwiffPlayer = reinterpret_cast<detail::CSwiffPlayer*>(detail::g_pClassManager->getClassByName(&std::string("SwiffPlayer")));
+			if (pSwiffPlayer && pSwiffPlayer != preSwiffPlayer)
 			{
-				// Fixes mouse related bug in flash menu after resizing window.
-				detail::CSwiffHost* pSwiffHost = reinterpret_cast<detail::CSwiffHost*>(detail::g_pClassManager->getClassByName(&std::string("SwiffHost")));
-
-				bs::TUInt2 preMouseArea;
-				if (pSwiffHost)
+				HOOK_VTABLE_FUNCTION(pSwiffPlayer, &detail::CSwiffPlayer::updateMouse, [](Hook_t::DetourArgs_t detourArgs)
 				{
-					preMouseArea = bs::TUInt2(pSwiffHost->mouseAreaWidth, pSwiffHost->mouseAreaHeight);
-					if (pWindow)
+					// Fixes mouse related bug in flash menu after resizing window.
+					detail::CSwiffHost* pSwiffHost = reinterpret_cast<detail::CSwiffHost*>(detail::g_pClassManager->getClassByName(&std::string("SwiffHost")));
+
+					bs::TUInt2 preMouseArea;
+					if (pSwiffHost)
 					{
-						pSwiffHost->mouseAreaWidth = pWindow->getClientSize().x();
-						pSwiffHost->mouseAreaHeight = pWindow->getClientSize().y();
+						preMouseArea = bs::TUInt2(pSwiffHost->mouseAreaWidth, pSwiffHost->mouseAreaHeight);
+						if (pWindow)
+						{
+							pSwiffHost->mouseAreaWidth = pWindow->getClientSize().x();
+							pSwiffHost->mouseAreaHeight = pWindow->getClientSize().y();
+						}
 					}
-				}
 
-				detourArgs.callOriginal();
+					detourArgs.callOriginal();
 
-				if (pSwiffHost)
-				{
-					pSwiffHost->mouseAreaWidth = preMouseArea.x();
-					pSwiffHost->mouseAreaHeight = preMouseArea.y();
-				}
-			});
-			preSwiffPlayer = pSwiffPlayer;
+					if (pSwiffHost)
+					{
+						pSwiffHost->mouseAreaWidth = preMouseArea.x();
+						pSwiffHost->mouseAreaHeight = preMouseArea.y();
+					}
+				});
+				preSwiffPlayer = pSwiffPlayer;
+			}
 		}
 	}
 
@@ -92,10 +95,10 @@ namespace DICE
 			if (!pSource)
 			{
 				pSource = reinterpret_cast<CMainConsoleObject*>(stl_71_wrapper::map_find(&g_pMainConsoleObjects->entryList, "Varsset"));
-
 				// Allocate a new virtual function table for our custom console objects
 				void** originalVTable = *(void***)pSource;
 				customVTable = (void**)malloc(sizeof(void*) * 32/*nrOfFunctions*/);
+
 				// Copy all vBF2 methods to the custom table
 				memcpy(customVTable, originalVTable, sizeof(void*) * 32);
 				// Replace original invoke method with ours
@@ -104,6 +107,7 @@ namespace DICE
 
 			CMainConsoleObject* pObject = reinterpret_cast<CMainConsoleObject*>(malloc(sizeof(CMainConsoleObject)));
 			memcpy(pObject, pSource, sizeof(CMainConsoleObject));
+			
 			*(void***)pObject = customVTable;
 
 			//pObject->authorizationLevel = userAccessible ? 1 : 2;
@@ -128,6 +132,8 @@ namespace DICE
 
 	::std::string invoke(const ::std::string& cmd)
 	{
+		if(!detail::g_pMainConsole)
+			return "";
 		std::string retVal;
 		retVal._Grow(1024); // TODO: figure out what is the actual required size / size used by DICE
 		detail::g_pMainConsole->Exec(&std::string((cmd + '\n').c_str()), &retVal);
